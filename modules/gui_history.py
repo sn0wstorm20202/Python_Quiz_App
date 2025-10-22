@@ -18,6 +18,9 @@ class HistoryScreen:
         # Set window size
         self.root.geometry("1000x600")
         
+        # Track sort order for each column
+        self.sort_reverse = {}
+        
         self.create_widgets()
     
     def create_widgets(self):
@@ -184,16 +187,23 @@ class HistoryScreen:
         summary_label.pack(pady=5)
     
     def sort_by_column(self, col):
-        """Sort treeview by column"""
-        # Get column index
-        columns = list(self.tree['columns'])
-        col_index = columns.index(col)
+        """Sort treeview by column with toggle between ascending/descending"""
+        # Toggle sort order for this column
+        if col not in self.sort_reverse:
+            self.sort_reverse[col] = False
+        else:
+            self.sort_reverse[col] = not self.sort_reverse[col]
         
         # Get all items
         items = [(self.tree.set(item, col), item) for item in self.tree.get_children('')]
         
-        # Sort items
-        items.sort(reverse=True)
+        # Sort items with proper type handling
+        try:
+            # Try to sort numerically if possible
+            items.sort(key=lambda x: float(x[0].rstrip('%')), reverse=self.sort_reverse[col])
+        except (ValueError, AttributeError):
+            # Fall back to string sorting
+            items.sort(key=lambda x: x[0], reverse=self.sort_reverse[col])
         
         # Rearrange items in sorted order
         for index, (val, item) in enumerate(items):
