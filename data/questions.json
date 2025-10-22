@@ -1,0 +1,482 @@
+[
+    {
+        "category": "Python",
+        "difficulty": "Easy",
+        "question": "What is the output of: print(type([]))?",
+        "options": ["<class 'list'>", "<class 'array'>", "<class 'tuple'>", "<class 'dict'>"],
+        "correct": 0,
+        "explanation": "[] creates an empty list object, and type() returns <class 'list'>"
+    },
+    {
+        "category": "Python",
+        "difficulty": "Easy",
+        "question": "Which keyword is used to define a function in Python?",
+        "options": ["function", "def", "func", "define"],
+        "correct": 1,
+        "explanation": "The 'def' keyword is used to define functions in Python"
+    },
+    {
+        "category": "Python",
+        "difficulty": "Easy",
+        "question": "What is the correct file extension for Python files?",
+        "options": [".pyth", ".pt", ".py", ".pyt"],
+        "correct": 2,
+        "explanation": "Python files use the .py extension"
+    },
+    {
+        "category": "Python",
+        "difficulty": "Easy",
+        "question": "Which of the following is a mutable data type in Python?",
+        "options": ["Tuple", "String", "List", "Integer"],
+        "correct": 2,
+        "explanation": "Lists are mutable, meaning their elements can be changed after creation"
+    },
+    {
+        "category": "Python",
+        "difficulty": "Easy",
+        "question": "What is the output of: print(2 ** 3)?",
+        "options": ["6", "8", "9", "5"],
+        "correct": 1,
+        "explanation": "The ** operator is the exponentiation operator. 2**3 = 2³ = 8"
+    },
+    {
+        "category": "Python",
+        "difficulty": "Easy",
+        "question": "How do you start a comment in Python?",
+        "options": ["//", "/*", "#", "<!--"],
+        "correct": 2,
+        "explanation": "Python uses # for single-line comments"
+    },
+    {
+        "category": "Python",
+        "difficulty": "Easy",
+        "question": "Which function is used to get the length of a list?",
+        "options": ["length()", "size()", "len()", "count()"],
+        "correct": 2,
+        "explanation": "The len() function returns the number of items in a container"
+    },
+    {
+        "category": "Python",
+        "difficulty": "Easy",
+        "question": "What is the output of: print('Hello' + 'World')?",
+        "options": ["Hello World", "HelloWorld", "Error", "Hello+World"],
+        "correct": 1,
+        "explanation": "The + operator concatenates strings without adding a space"
+    },
+    {
+        "category": "Python",
+        "difficulty": "Medium",
+        "question": "What is the output of: print([1, 2, 3] * 2)?",
+        "options": ["[2, 4, 6]", "[1, 2, 3, 1, 2, 3]", "[1, 2, 3, 2]", "Error"],
+        "correct": 1,
+        "explanation": "The * operator repeats the list elements. [1,2,3]*2 creates [1,2,3,1,2,3]"
+    },
+    {
+        "category": "Python",
+        "difficulty": "Medium",
+        "question": "Which method is used to add an element to the end of a list?",
+        "options": ["add()", "append()", "insert()", "push()"],
+        "correct": 1,
+        "explanation": "The append() method adds an element to the end of a list"
+    },
+    {
+        "category": "Python",
+        "difficulty": "Medium",
+        "question": "What does the 'pass' statement do in Python?",
+        "options": ["Exits the loop", "Skips to next iteration", "Does nothing", "Raises an error"],
+        "correct": 2,
+        "explanation": "The pass statement is a null operation; it does nothing when executed"
+    },
+    {
+        "category": "Python",
+        "difficulty": "Medium",
+        "question": "What is the output of: bool(0)?",
+        "options": ["True", "False", "0", "None"],
+        "correct": 1,
+        "explanation": "In Python, 0 is considered False when converted to boolean"
+    },
+    {
+        "category": "Python",
+        "difficulty": "Medium",
+        "question": "Which of these is NOT a valid Python data type?",
+        "options": ["Dictionary", "Set", "Array", "Tuple"],
+        "correct": 2,
+        "explanation": "Array is not a built-in Python data type. Python uses lists instead"
+    },
+    {
+        "category": "Python",
+        "difficulty": "Medium",
+        "question": "What does the enumerate() function return?",
+        "options": ["Only values", "Only indices", "Index-value pairs", "Length"],
+        "correct": 2,
+        "explanation": "enumerate() returns an iterator of tuples containing index-value pairs"
+    },
+    {
+        "category": "Python",
+        "difficulty": "Medium",
+        "question": "What is the correct syntax for a lambda function that adds 10 to input?",
+        "options": ["lambda x: x + 10", "lambda(x): x + 10", "lambda x => x + 10", "lambda x -> x + 10"],
+        "correct": 0,
+        "explanation": "Lambda syntax: lambda parameter: expression. No parentheses needed"
+    },
+    {
+        "category": "Python",
+        "difficulty": "Hard",
+        "question": "What is the output of: print({1, 2, 3} & {2, 3, 4})?",
+        "options": ["{1, 2, 3, 4}", "{2, 3}", "{1, 4}", "Error"],
+        "correct": 1,
+        "explanation": "The & operator performs set intersection, returning common elements {2, 3}"
+    },
+    {
+        "category": "Python",
+        "difficulty": "Hard",
+        "question": "What does the __init__ method do in a class?",
+        "options": ["Destroys object", "Initializes object", "Creates class", "Defines method"],
+        "correct": 1,
+        "explanation": "__init__ is the constructor method that initializes object attributes"
+    },
+    {
+        "category": "Python",
+        "difficulty": "Hard",
+        "question": "What is a closure in Python?",
+        "options": ["A closed file", "A nested function with access to outer scope", "A terminated loop", "A sealed class"],
+        "correct": 1,
+        "explanation": "A closure is a nested function that remembers values from its enclosing scope"
+    },
+    {
+        "category": "Python",
+        "difficulty": "Hard",
+        "question": "What does the @property decorator do?",
+        "options": ["Makes method static", "Creates getter method", "Makes method private", "Creates constructor"],
+        "correct": 1,
+        "explanation": "@property allows method to be accessed like an attribute (getter method)"
+    },
+    {
+        "category": "Python",
+        "difficulty": "Hard",
+        "question": "What is the purpose of the 'yield' keyword?",
+        "options": ["Returns value", "Creates generator", "Pauses execution", "Defines variable"],
+        "correct": 1,
+        "explanation": "'yield' is used to create generator functions that return an iterator"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Easy",
+        "question": "What is the time complexity of accessing an array element by index?",
+        "options": ["O(n)", "O(log n)", "O(1)", "O(n²)"],
+        "correct": 2,
+        "explanation": "Array elements can be accessed in constant time O(1) using their index"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Easy",
+        "question": "Which data structure uses LIFO (Last In First Out) principle?",
+        "options": ["Queue", "Stack", "Array", "Tree"],
+        "correct": 1,
+        "explanation": "Stack follows LIFO: the last element added is the first one to be removed"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Easy",
+        "question": "What is the maximum number of children a binary tree node can have?",
+        "options": ["1", "2", "3", "Unlimited"],
+        "correct": 1,
+        "explanation": "Binary tree nodes can have at most 2 children: left and right"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Easy",
+        "question": "Which sorting algorithm has the best average case time complexity?",
+        "options": ["Bubble Sort", "Selection Sort", "Quick Sort", "Insertion Sort"],
+        "correct": 2,
+        "explanation": "Quick Sort has O(n log n) average case complexity, better than O(n²) algorithms"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Easy",
+        "question": "What does a queue use for its operations?",
+        "options": ["LIFO", "FIFO", "Random", "Priority"],
+        "correct": 1,
+        "explanation": "Queue uses FIFO (First In First Out) principle"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Easy",
+        "question": "In a linked list, what does the last node point to?",
+        "options": ["First node", "Previous node", "NULL", "Itself"],
+        "correct": 2,
+        "explanation": "The last node in a linked list points to NULL indicating the end"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Easy",
+        "question": "What is the space complexity of an array of size n?",
+        "options": ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+        "correct": 2,
+        "explanation": "An array of size n requires O(n) space to store n elements"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Easy",
+        "question": "Which traversal visits root node first in a binary tree?",
+        "options": ["Inorder", "Preorder", "Postorder", "Level order"],
+        "correct": 1,
+        "explanation": "Preorder traversal visits root first, then left subtree, then right subtree"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Medium",
+        "question": "What is the worst case time complexity of binary search?",
+        "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+        "correct": 1,
+        "explanation": "Binary search divides the search space in half each time: O(log n)"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Medium",
+        "question": "Which data structure is used to implement recursion?",
+        "options": ["Queue", "Stack", "Array", "Tree"],
+        "correct": 1,
+        "explanation": "Recursion uses the call stack to store function calls and local variables"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Medium",
+        "question": "What is the height of a complete binary tree with n nodes?",
+        "options": ["n", "log n", "n/2", "√n"],
+        "correct": 1,
+        "explanation": "A complete binary tree has height log₂(n), rounded up"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Medium",
+        "question": "Which algorithm technique does merge sort use?",
+        "options": ["Greedy", "Divide and Conquer", "Dynamic Programming", "Backtracking"],
+        "correct": 1,
+        "explanation": "Merge sort divides array into halves, sorts them, and merges (Divide & Conquer)"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Medium",
+        "question": "In a hash table with chaining, what is used to handle collisions?",
+        "options": ["Arrays", "Linked Lists", "Trees", "Stacks"],
+        "correct": 1,
+        "explanation": "Chaining uses linked lists at each bucket to store colliding elements"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Medium",
+        "question": "What is the time complexity of inserting at the end of a doubly linked list?",
+        "options": ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+        "correct": 0,
+        "explanation": "With a tail pointer, insertion at the end is O(1) constant time"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Medium",
+        "question": "Which graph traversal uses a queue?",
+        "options": ["DFS", "BFS", "Both", "Neither"],
+        "correct": 1,
+        "explanation": "BFS (Breadth First Search) uses a queue to visit nodes level by level"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Hard",
+        "question": "What is the time complexity of building a heap from an unsorted array?",
+        "options": ["O(n)", "O(n log n)", "O(log n)", "O(n²)"],
+        "correct": 0,
+        "explanation": "Building a heap from scratch using heapify takes O(n) time, not O(n log n)"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Hard",
+        "question": "In dynamic programming, what does memoization mean?",
+        "options": ["Recursion", "Storing results", "Iteration", "Sorting"],
+        "correct": 1,
+        "explanation": "Memoization stores computed results to avoid redundant calculations"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Hard",
+        "question": "What is the maximum number of edges in a complete graph with n vertices?",
+        "options": ["n", "n²", "n(n-1)/2", "2n"],
+        "correct": 2,
+        "explanation": "Complete graph has edge between every pair: C(n,2) = n(n-1)/2 edges"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Hard",
+        "question": "Which algorithm finds shortest path in weighted graphs with negative edges?",
+        "options": ["Dijkstra", "Bellman-Ford", "Floyd-Warshall", "Prim's"],
+        "correct": 1,
+        "explanation": "Bellman-Ford can handle negative edges, unlike Dijkstra's algorithm"
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Hard",
+        "question": "What is the space complexity of depth-first search on a graph?",
+        "options": ["O(V)", "O(E)", "O(V + E)", "O(V²)"],
+        "correct": 0,
+        "explanation": "DFS uses a stack (recursion/explicit) that can grow to O(V) in worst case"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Easy",
+        "question": "What does HTTP stand for?",
+        "options": ["HyperText Transfer Protocol", "HyperText Transmission Protocol", "High Transfer Text Protocol", "HyperText Transfer Process"],
+        "correct": 0,
+        "explanation": "HTTP stands for HyperText Transfer Protocol, used for web communication"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Easy",
+        "question": "Which layer of OSI model is responsible for routing?",
+        "options": ["Physical", "Data Link", "Network", "Transport"],
+        "correct": 2,
+        "explanation": "The Network layer (Layer 3) handles routing and logical addressing"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Easy",
+        "question": "What is the default port number for HTTP?",
+        "options": ["21", "22", "80", "443"],
+        "correct": 2,
+        "explanation": "HTTP uses port 80 by default, while HTTPS uses port 443"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Easy",
+        "question": "What does IP stand for in networking?",
+        "options": ["Internet Protocol", "Internal Protocol", "Internet Process", "Inter Protocol"],
+        "correct": 0,
+        "explanation": "IP stands for Internet Protocol, the addressing system of the Internet"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Easy",
+        "question": "Which protocol is connection-oriented?",
+        "options": ["UDP", "TCP", "IP", "ICMP"],
+        "correct": 1,
+        "explanation": "TCP (Transmission Control Protocol) is connection-oriented with reliability"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Easy",
+        "question": "What does DNS stand for?",
+        "options": ["Domain Name System", "Domain Network System", "Digital Name System", "Domain Name Service"],
+        "correct": 0,
+        "explanation": "DNS (Domain Name System) translates domain names to IP addresses"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Easy",
+        "question": "How many layers are in the OSI model?",
+        "options": ["5", "6", "7", "8"],
+        "correct": 2,
+        "explanation": "The OSI (Open Systems Interconnection) model has 7 layers"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Easy",
+        "question": "What is the range of well-known port numbers?",
+        "options": ["0-1023", "1024-49151", "49152-65535", "0-65535"],
+        "correct": 0,
+        "explanation": "Well-known ports range from 0-1023, reserved for standard services"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Medium",
+        "question": "What is the subnet mask for a /24 network?",
+        "options": ["255.0.0.0", "255.255.0.0", "255.255.255.0", "255.255.255.255"],
+        "correct": 2,
+        "explanation": "/24 means 24 bits for network, giving subnet mask 255.255.255.0"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Medium",
+        "question": "Which protocol is used to send emails?",
+        "options": ["FTP", "SMTP", "POP3", "IMAP"],
+        "correct": 1,
+        "explanation": "SMTP (Simple Mail Transfer Protocol) is used for sending emails"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Medium",
+        "question": "What does ARP stand for?",
+        "options": ["Address Resolution Protocol", "Address Routing Protocol", "Application Resolution Protocol", "Address Reply Protocol"],
+        "correct": 0,
+        "explanation": "ARP resolves IP addresses to MAC (physical) addresses"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Medium",
+        "question": "In TCP three-way handshake, what is the order of flags?",
+        "options": ["SYN, SYN-ACK, ACK", "ACK, SYN, SYN-ACK", "SYN, ACK, SYN-ACK", "ACK, ACK, SYN"],
+        "correct": 0,
+        "explanation": "TCP handshake: client sends SYN, server replies SYN-ACK, client sends ACK"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Medium",
+        "question": "What is the maximum size of an IPv4 packet?",
+        "options": ["1500 bytes", "65535 bytes", "32768 bytes", "4096 bytes"],
+        "correct": 1,
+        "explanation": "IPv4 packets can be up to 65535 bytes due to 16-bit length field"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Medium",
+        "question": "Which layer does a switch operate at?",
+        "options": ["Physical", "Data Link", "Network", "Transport"],
+        "correct": 1,
+        "explanation": "A switch operates at Data Link layer (Layer 2) using MAC addresses"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Medium",
+        "question": "What is the purpose of NAT (Network Address Translation)?",
+        "options": ["Encrypt data", "Translate addresses", "Route packets", "Check errors"],
+        "correct": 1,
+        "explanation": "NAT translates private IP addresses to public IPs for Internet access"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Hard",
+        "question": "What is the congestion window in TCP congestion control?",
+        "options": ["Receiver buffer", "Sender's send limit", "Network capacity", "Packet loss rate"],
+        "correct": 1,
+        "explanation": "Congestion window limits how much data sender can transmit before receiving ACK"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Hard",
+        "question": "In IPv6, what is the size of an address?",
+        "options": ["32 bits", "64 bits", "128 bits", "256 bits"],
+        "correct": 2,
+        "explanation": "IPv6 addresses are 128 bits long, compared to IPv4's 32 bits"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Hard",
+        "question": "What algorithm does Ethernet use for collision detection?",
+        "options": ["TDMA", "CDMA", "CSMA/CD", "CSMA/CA"],
+        "correct": 2,
+        "explanation": "Ethernet uses CSMA/CD (Carrier Sense Multiple Access with Collision Detection)"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Hard",
+        "question": "What is the purpose of the TTL field in IP header?",
+        "options": ["Security", "Prevent routing loops", "Error checking", "Prioritization"],
+        "correct": 1,
+        "explanation": "TTL (Time To Live) prevents packets from circulating forever in routing loops"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Hard",
+        "question": "In HTTPS, which protocol provides encryption?",
+        "options": ["TCP", "TLS/SSL", "HTTP", "IP"],
+        "correct": 1,
+        "explanation": "TLS/SSL (Transport Layer Security/Secure Sockets Layer) provides encryption for HTTPS"
+    }
+]
