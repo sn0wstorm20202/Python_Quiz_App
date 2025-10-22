@@ -7,6 +7,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 import sys
 import os
+import time
 
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -137,8 +138,10 @@ class QuizApplication:
             'category': category,
             'difficulty': difficulty,
             'mode': mode,
-            'start_time': None,
-            'time_elapsed': 0
+            'question_start_time': None,
+            'total_time': 0,
+            'time_bonuses': [],
+            'consecutive_correct': 0
         }
         
         self.show_question()
@@ -153,15 +156,31 @@ class QuizApplication:
         data = self.quiz_data
         question = data['questions'][data['current_index']]
         
-        # Header with question counter
-        header = tk.Label(quiz_frame, text=f"Question {data['current_index'] + 1}/{len(data['questions'])}",
+        # Start timer for this question
+        data['question_start_time'] = time.time()
+        
+        # Header with question counter and mode
+        mode_display = f" [{data['mode']} Mode]" if data['mode'] != 'Practice' else ""
+        header = tk.Label(quiz_frame, text=f"Question {data['current_index'] + 1}/{len(data['questions'])}{mode_display}",
                          font=('Arial', 16, 'bold'), bg='white')
         header.pack(pady=10)
         
-        # Score display
+        # Score display with mode-specific info
         score_text = f"Correct: {data['correct']} | Wrong: {data['wrong']}"
+        if data['mode'] == 'Survival':
+            lives = 3 - data['wrong']
+            score_text += f" | Lives: {'❤️' * lives}"
+        elif data['mode'] == 'Timed':
+            score_text += f" | Bonus Points: {sum(data['time_bonuses'])}"
+        
         score_label = tk.Label(quiz_frame, text=score_text, font=('Arial', 12), bg='white')
         score_label.pack(pady=5)
+        
+        # Timer label for Timed mode
+        if data['mode'] == 'Timed':
+            self.timer_label = tk.Label(quiz_frame, text="Time: 0s", font=('Arial', 14, 'bold'), bg='white', fg='#e74c3c')
+            self.timer_label.pack(pady=5)
+            self.update_timer()
         
         # Question text
         q_frame = tk.Frame(quiz_frame, bg='#f0f0f0', relief=tk.RAISED, bd=2)
@@ -184,6 +203,18 @@ class QuizApplication:
                               fg='white', width=20, height=2, command=self.submit_answer)
         submit_btn.pack(pady=20)
     
+    def update_timer(self):
+        """Update timer display for Timed mode"""
+        if not hasattr(self, 'timer_label') or not self.timer_label.winfo_exists():
+            return
+        
+        data = self.quiz_data
+        if data['question_start_time']:
+            elapsed = int(time.time() - data['question_start_time'])
+            self.timer_label.config(text=f"Time: {elapsed}s")
+            # Schedule next update
+            self.root.after(100, self.update_timer)
+    
     def submit_answer(self):
         """Process submitted answer"""
         selected = self.selected_option.get()
@@ -196,23 +227,47 @@ class QuizApplication:
         question = data['questions'][data['current_index']]
         correct_ans = question['correct']
         
+        # Calculate time taken
+        time_taken = 0
+        if data['question_start_time']:
+            time_taken = time.time() - data['question_start_time']
+            data['total_time'] += time_taken
+        
         # Check if correct
         is_correct = (selected == correct_ans)
         
         if is_correct:
             data['correct'] += 1
+            data['consecutive_correct'] += 1
+            
+            # Calculate time bonus for Timed mode
+            if data['mode'] == 'Timed':
+                bonus = score_calculator.calculate_time_bonus(time_taken)
+                data['time_bonuses'].append(bonus)
         else:
             data['wrong'] += 1
+            data['consecutive_correct'] = 0
+            
+            # Check Survival mode game over
+            if data['mode'] == 'Survival' and data['wrong'] >= 3:
+                # Game over - show results immediately
+                self.show_results()
+                return
         
         # Store answer
         data['answers'].append({
             'question': question,
             'selected': selected,
-            'correct': is_correct
+            'correct': is_correct,
+            'time_taken': time_taken
         })
         
-        # Show feedback
-        self.show_feedback(is_correct, question)
+        # Show feedback (or skip for Timed/Survival to keep pace)
+        if data['mode'] == 'Practice':
+            self.show_feedback(is_correct, question)
+        else:
+            # For Timed/Survival, show brief feedback then move on
+            self.show_brief_feedback(is_correct, question)
     
     def show_feedback(self, is_correct, question):
         """Show answer feedback"""
@@ -249,6 +304,44 @@ class QuizApplication:
                             fg='white', width=20, height=2, command=self.next_question)
         next_btn.pack(pady=20)
     
+    def show_brief_feedback(self, is_correct, question):
+        """Show brief feedback for Timed/Survival modes"""
+        self.clear_screen()
+        
+        feedback_frame = tk.Frame(self.root, bg='white')
+        feedback_frame.pack(fill=tk.BOTH, expand=True, padx=40, pady=40)
+        
+        # Result
+        if is_correct:
+            result_text = "✓ Correct!"
+            color = '#27ae60'
+        else:
+            result_text = "✗ Incorrect"
+            color = '#e74c3c'
+        
+        result_label = tk.Label(feedback_frame, text=result_text, font=('Arial', 32, 'bold'), fg=color, bg='white')
+        result_label.pack(pady=60)
+        
+        # Show correct answer if wrong
+        if not is_correct:
+            correct_label = tk.Label(feedback_frame, text=f"Correct Answer: {question['options'][question['correct']]}",
+                                    font=('Arial', 16), bg='white')
+            correct_label.pack(pady=20)
+        
+        # Mode-specific messages
+        data = self.quiz_data
+        if data['mode'] == 'Survival' and data['consecutive_correct'] >= 5:
+            bonus_label = tk.Label(feedback_frame, text="🔥 5+ Streak! 1.5x Multiplier Active!",
+                                  font=('Arial', 14, 'bold'), bg='white', fg='#f39c12')
+            bonus_label.pack(pady=10)
+        elif data['mode'] == 'Timed' and len(data['time_bonuses']) > 0 and data['time_bonuses'][-1] > 0:
+            bonus_label = tk.Label(feedback_frame, text=f"⚡ Time Bonus: +{data['time_bonuses'][-1]} points!",
+                                  font=('Arial', 14, 'bold'), bg='white', fg='#3498db')
+            bonus_label.pack(pady=10)
+        
+        # Auto-advance after 1.5 seconds
+        self.root.after(1500, self.next_question)
+    
     def next_question(self):
         """Move to next question or show results"""
         data = self.quiz_data
@@ -268,15 +361,30 @@ class QuizApplication:
         correct = data['correct']
         wrong = data['wrong']
         
-        # Calculate score using NumPy
+        # Calculate score using NumPy based on mode
         percentage = score_calculator.calculate_percentage(correct, total)
-        score = score_calculator.calculate_base_score(correct, data['difficulty'])
+        
+        if data['mode'] == 'Timed':
+            # Add time bonuses
+            base_score = score_calculator.calculate_base_score(correct, data['difficulty'])
+            time_bonus = sum(data['time_bonuses'])
+            score = base_score + time_bonus
+        elif data['mode'] == 'Survival':
+            # Apply combo multiplier if applicable
+            score = score_calculator.calculate_base_score(correct, data['difficulty'])
+            if correct >= 5:
+                score = int(score * 1.5)
+        else:
+            # Practice mode - base scoring
+            score = score_calculator.calculate_base_score(correct, data['difficulty'])
+        
         grade_info = score_calculator.get_grade_info(percentage)
         
         # Save to database
+        time_taken = int(data['total_time'])
         data_manager.add_quiz_attempt(
             self.current_user, data['category'], data['difficulty'], total,
-            correct, wrong, score, percentage, 0, data['mode']
+            correct, wrong, score, percentage, time_taken, data['mode']
         )
         
         results_frame = tk.Frame(self.root, bg='white')
@@ -298,8 +406,14 @@ class QuizApplication:
                               bg=grade_info['color'], fg='white')
         grade_label.pack(pady=(0, 20))
         
-        # Stats
+        # Stats with mode-specific details
         stats_text = f"Total Questions: {total} | Correct: {correct} | Wrong: {wrong} | Score: {score}"
+        if data['mode'] == 'Timed':
+            stats_text += f" | Time Bonus: +{sum(data['time_bonuses'])} | Total Time: {int(data['total_time'])}s"
+        elif data['mode'] == 'Survival':
+            if correct >= 5:
+                stats_text += " | 🔥 1.5x Multiplier Applied!"
+        
         stats_label = tk.Label(results_frame, text=stats_text, font=('Arial', 12), bg='white')
         stats_label.pack(pady=20)
         
