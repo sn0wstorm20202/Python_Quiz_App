@@ -24,23 +24,32 @@ class HistoryScreen:
         self.create_widgets()
     
     def create_widgets(self):
-        # Main frame
-        main_frame = tk.Frame(self.root, bg='#ecf0f1')
+        # Main frame with modern bg
+        main_frame = tk.Frame(self.root, bg='#f5f7fa')
         main_frame.pack(fill=tk.BOTH, expand=True)
         
-        # Header
-        header_frame = tk.Frame(main_frame, bg='#3498db', height=80)
+        # Modern header
+        header_frame = tk.Frame(main_frame, bg='#667eea', height=100)
         header_frame.pack(fill=tk.X)
         header_frame.pack_propagate(False)
         
         title = tk.Label(
             header_frame,
-            text=f"Quiz History - {self.username}",
-            font=('Arial', 20, 'bold'),
-            bg='#3498db',
+            text=f"📜 Quiz History - {self.username}",
+            font=('Segoe UI', 26, 'bold'),
+            bg='#667eea',
             fg='white'
         )
-        title.pack(pady=25)
+        title.pack(pady=(25, 5))
+        
+        subtitle = tk.Label(
+            header_frame,
+            text="Review your past quiz attempts",
+            font=('Segoe UI', 11),
+            bg='#667eea',
+            fg='#e0e7ff'
+        )
+        subtitle.pack()
         
         # Get user history using pandas
         self.history_df = data_manager.get_user_history(self.username)
@@ -123,34 +132,38 @@ class HistoryScreen:
             # Statistics summary
             self.create_summary_panel(main_frame)
         
-        # Buttons
-        btn_frame = tk.Frame(main_frame, bg='#ecf0f1')
-        btn_frame.pack(pady=10)
+        # Modern buttons
+        btn_container = tk.Frame(main_frame, bg='#f5f7fa')
+        btn_container.pack(fill=tk.X, padx=40, pady=15)
         
         if not self.history_df.empty:
             export_btn = tk.Button(
-                btn_frame,
-                text="Export to CSV",
-                font=('Arial', 12, 'bold'),
-                bg='#27ae60',
-                fg='white',
-                width=15,
-                height=2,
+                btn_container,
+                text="💾 Export to CSV",
+                font=('Segoe UI', 11),
+                bg='#f7fafc',
+                fg='#667eea',
+                relief=tk.FLAT,
+                bd=0,
+                cursor='hand2',
+                activebackground='#edf2f7',
                 command=self.export_history
             )
-            export_btn.pack(side=tk.LEFT, padx=10)
+            export_btn.pack(fill=tk.X, pady=(0, 10), ipady=12)
         
         back_btn = tk.Button(
-            btn_frame,
-            text="Back to Dashboard",
-            font=('Arial', 12, 'bold'),
-            bg='#3498db',
+            btn_container,
+            text="← Back to Dashboard",
+            font=('Segoe UI', 12, 'bold'),
+            bg='#667eea',
             fg='white',
-            width=18,
-            height=2,
+            relief=tk.FLAT,
+            bd=0,
+            cursor='hand2',
+            activebackground='#5568d3',
             command=self.back_callback
         )
-        back_btn.pack(side=tk.LEFT, padx=10)
+        back_btn.pack(fill=tk.X, ipady=12)
     
     def create_summary_panel(self, parent):
         """Create summary statistics panel"""

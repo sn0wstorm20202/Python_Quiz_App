@@ -3,3 +3,10 @@ user_id,username,date,time,category,difficulty,total_questions,correct,wrong,sco
 2,Hello,2025-10-22,17:07:15,Computer Networks,Easy,5,3,2,30,60.0,0,Timed
 3,Hello,2025-10-22,17:08:15,Computer Networks,Easy,5,2,3,20,40.0,0,Survival
 4,Somsubhra,2025-10-22,17:42:37,DSA,Easy,5,0,3,0,0.0,23,Survival
+5,Somsubhra,2025-10-26,13:16:56,Computer Networks,Easy,8,4,4,40,50.0,44,Practice
+6,Somsubhra,2025-10-26,13:27:26,Computer Networks,Easy,8,5,3,75,62.5,46,Timed
+7,Somsubhra,2025-10-26,13:34:44,Python,Medium,5,2,3,40,40.0,25,Timed
+8,Somsubhra,2025-10-26,13:40:41,DSA,Easy,5,1,4,15,20.0,25,Timed
+9,Somsubhra,2025-10-26,13:54:08,DSA,Hard,5,0,5,0,0.0,33,Timed
+10,Somsubhra,2025-10-27,02:00:56,DSA,Easy,5,4,1,56,80.0,43,Timed
+11,Somsubhra,2025-10-27,02:02:04,Python,Hard,5,0,3,0,0.0,4,Survival
