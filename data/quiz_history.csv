@@ -10,3 +10,14 @@ user_id,username,date,time,category,difficulty,total_questions,correct,wrong,sco
 9,Somsubhra,2025-10-26,13:54:08,DSA,Hard,5,0,5,0,0.0,33,Timed
 10,Somsubhra,2025-10-27,02:00:56,DSA,Easy,5,4,1,56,80.0,43,Timed
 11,Somsubhra,2025-10-27,02:02:04,Python,Hard,5,0,3,0,0.0,4,Survival
+12,Somsubhra,2025-10-27,13:14:46,DSA,Easy,5,4,1,60,80.0,39,Timed
+13,Somsubhra,2025-10-27,13:25:06,Computer Networks,Hard,5,0,5,0,0.0,30,Timed
+14,Somsubhra,2025-10-27,13:53:57,Python,Medium,5,2,3,40,40.0,38,Timed
+15,Somsubhra,2025-10-27,14:02:10,Python,Easy,5,4,1,58,80.0,35,Timed
+16,Somsubhra,2025-10-27,14:04:12,DSA,Easy,5,5,0,73,100.0,40,Timed
+17,Somsubhra,2025-10-27,14:06:45,Computer Networks,Easy,5,5,0,75,100.0,17,Timed
+18,Somsubhra,2025-10-27,14:25:39,Python,Hard,5,4,1,118,80.0,39,Timed
+19,Somsubhra,2025-10-27,14:29:11,Computer Networks,Easy,5,4,1,40,80.0,21,Survival
+20,Somsubhra,2025-10-27,14:34:03,Computer Networks,Easy,5,4,1,40,80.0,20,Survival
+21,Somsubhra,2025-10-27,14:36:44,Computer Networks,Easy,5,5,0,73,100.0,26,Timed
+22,Somsubhra,2025-10-27,15:03:13,Computer Networks,Easy,5,5,0,75,100.0,14,Timed

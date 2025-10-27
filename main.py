@@ -15,6 +15,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from modules.gui_login import LoginScreen
 from modules.gui_dashboard import DashboardScreen
 from utils import file_handler, data_manager, question_manager, score_calculator
+from utils import achievements, sound_effects, confetti
 
 
 class QuizApplication:
@@ -34,6 +35,22 @@ class QuizApplication:
         """Clear all widgets from root"""
         for widget in self.root.winfo_children():
             widget.destroy()
+    
+    # ---------- Shared UI components ----------
+    def add_top_nav(self, parent):
+        """Add a compact navigation bar with quick actions"""
+        nav = tk.Frame(parent, bg='#eef2ff', highlightthickness=1, highlightbackground='#e2e8f0')
+        nav.pack(fill=tk.X)
+        
+        def nav_btn(text, command):
+            return tk.Button(nav, text=text, font=('Segoe UI', 10, 'bold'),
+                             bg='#eef2ff', fg='#374151', relief=tk.FLAT, bd=0, cursor='hand2',
+                             activebackground='#e0e7ff', command=command)
+        
+        nav_btn('← Dashboard', self.show_dashboard).pack(side=tk.LEFT, padx=8, pady=6)
+        nav_btn('📊 Analytics', self.show_analytics).pack(side=tk.LEFT, padx=8, pady=6)
+        nav_btn('🏆 Leaderboard', self.show_leaderboard).pack(side=tk.LEFT, padx=8, pady=6)
+        nav_btn('👤 Profile', self.show_profile).pack(side=tk.LEFT, padx=8, pady=6)
     
     def show_login(self):
         """Show login screen"""
@@ -63,6 +80,9 @@ class QuizApplication:
         self.clear_screen()
         main_container = tk.Frame(self.root, bg='#f5f7fa')
         main_container.pack(fill=tk.BOTH, expand=True)
+        
+        # Quick navigation bar
+        self.add_top_nav(main_container)
         
         # Centered card
         setup_card = tk.Frame(main_container, bg='white', relief=tk.FLAT, bd=0,
@@ -103,15 +123,28 @@ class QuizApplication:
         difficulty_dropdown.current(0)
         difficulty_dropdown.pack(pady=(0, 20))
         
-        # Mode
-        tk.Label(content, text="Mode", font=('Segoe UI', 11, 'bold'),
-                bg='white', fg='#4a5568', anchor='w').pack(fill=tk.X, pady=(0, 5))
+        # Mode with info button
+        mode_header_frame = tk.Frame(content, bg='white')
+        mode_header_frame.pack(fill=tk.X, pady=(0, 5))
+        
+        tk.Label(mode_header_frame, text="Mode", font=('Segoe UI', 11, 'bold'),
+                bg='white', fg='#4a5568', anchor='w').pack(side=tk.LEFT)
+        
+        # Info button for mode descriptions
+        info_btn = tk.Button(mode_header_frame, text="ℹ️", font=('Segoe UI', 10),
+                            bg='#e0e7ff', fg='#667eea', relief=tk.FLAT, bd=0, cursor='hand2',
+                            command=self.show_mode_info)
+        info_btn.pack(side=tk.LEFT, padx=5)
+        
         mode_var = tk.StringVar()
         modes = ['Practice', 'Timed', 'Survival']
         mode_dropdown = ttk.Combobox(content, textvariable=mode_var, values=modes,
                                     state='readonly', font=('Segoe UI', 11), width=40)
         mode_dropdown.current(0)
         mode_dropdown.pack(pady=(0, 20))
+        
+        # Bind mode selection to show description
+        mode_dropdown.bind('<<ComboboxSelected>>', lambda e: self.show_mode_description(mode_var.get()))
         
         # Number of questions
         tk.Label(content, text="Number of Questions", font=('Segoe UI', 11, 'bold'),
@@ -135,6 +168,58 @@ class QuizApplication:
                             activebackground='#edf2f7', command=self.show_dashboard)
         back_btn.pack(fill=tk.X, ipady=12)
     
+    def show_mode_info(self):
+        """Show information about all quiz modes"""
+        info_text = """\n🎯 QUIZ MODES\n
+📝 Practice Mode:
+• Untimed practice session
+• Immediate feedback with explanations
+• Perfect for learning
+• No time pressure
+
+⏱️ Timed Mode:
+• 15-second countdown per question
+• Time bonus points available:
+  - Answer in ≤10s: +5 bonus points
+  - Answer in ≤20s: +3 bonus points
+• Test your speed and knowledge!
+
+💪 Survival Mode:
+• 3 lives only
+• Game ends after 3 wrong answers
+• 1.5x score multiplier for 5+ correct streak
+• High stakes challenge!
+"""
+        messagebox.showinfo("Quiz Modes", info_text)
+    
+    def show_mode_description(self, mode):
+        """Show description popup for selected mode"""
+        descriptions = {
+            'Practice': "📝 Practice Mode\n\nTake your time to learn!\n• No timer\n• Detailed explanations\n• Perfect for studying",
+            'Timed': "⏱️ Timed Mode\n\nRace against the clock!\n• 15 seconds per question\n• Earn time bonuses\n• Fast answers = more points",
+            'Survival': "💪 Survival Mode\n\nOnly 3 lives!\n• Game ends at 3 mistakes\n• 5+ streak = 1.5x multiplier\n• High risk, high reward"
+        }
+        
+        if mode in descriptions:
+            # Create a small popup window
+            popup = tk.Toplevel(self.root)
+            popup.title(f"{mode} Mode")
+            popup.geometry("350x200")
+            popup.configure(bg='white')
+            
+            # Center popup
+            popup.transient(self.root)
+            popup.grab_set()
+            
+            msg_label = tk.Label(popup, text=descriptions[mode], font=('Segoe UI', 11),
+                               bg='white', fg='#2d3748', justify=tk.LEFT, padx=20, pady=20)
+            msg_label.pack(expand=True, fill=tk.BOTH)
+            
+            ok_btn = tk.Button(popup, text="Got it!", font=('Segoe UI', 11, 'bold'),
+                             bg='#667eea', fg='white', relief=tk.FLAT, command=popup.destroy,
+                             cursor='hand2', activebackground='#5568d3')
+            ok_btn.pack(pady=(0, 15), padx=50, fill=tk.X, ipady=8)
+    
     def start_quiz(self, category, difficulty, mode, count):
         """Start the quiz"""
         # Get questions
@@ -151,6 +236,9 @@ class QuizApplication:
         """Display quiz interface"""
         self.clear_screen()
         
+        # Update streak when starting quiz
+        streak = achievements.update_streak(self.current_user)
+        
         self.quiz_data = {
             'questions': questions,
             'current_index': 0,
@@ -165,7 +253,10 @@ class QuizApplication:
             'time_bonuses': [],
             'consecutive_correct': 0,
             'timer_seconds': 15,
-            'timer_id': None
+            'timer_id': None,
+            'hints_remaining': 3,  # 3 hints per quiz
+            'hints_used': [],  # Track which questions used hints
+            'eliminated_options': []  # Track eliminated options for current question
         }
         
         self.show_question()
@@ -177,6 +268,9 @@ class QuizApplication:
         # Main container with gradient-like effect
         main_container = tk.Frame(self.root, bg='#f5f7fa')
         main_container.pack(fill=tk.BOTH, expand=True)
+        
+        # Quick navigation bar
+        self.add_top_nav(main_container)
         
         # Quiz card (centered modern card design)
         quiz_frame = tk.Frame(main_container, bg='white', relief=tk.FLAT, bd=0, highlightthickness=2, highlightbackground='#e0e6ed')
@@ -190,7 +284,7 @@ class QuizApplication:
         data['question_start_time'] = time.time()
         
         # Top bar with gradient background
-        top_bar = tk.Frame(quiz_frame, bg='#667eea', height=80)
+        top_bar = tk.Frame(quiz_frame, bg='#667eea', height=100)
         top_bar.pack(fill=tk.X, side=tk.TOP)
         top_bar.pack_propagate(False)
         
@@ -211,12 +305,16 @@ class QuizApplication:
         score_label = tk.Label(top_bar, text=score_text, font=('Segoe UI', 11), bg='#667eea', fg='#ffffff')
         score_label.pack()
         
-        # Timer display (always visible with 15-second countdown)
-        self.timer_label = tk.Label(top_bar, text="⏱ 15", font=('Segoe UI', 16, 'bold'), bg='#667eea', fg='#ffd700')
+        # Timer display (show only in Timed mode)
+        self.timer_label = tk.Label(top_bar, text="", font=('Segoe UI', 16, 'bold'), bg='#667eea', fg='#ffd700')
         self.timer_label.pack(pady=3)
         
-        # Start countdown timer
-        self.update_question_timer()
+        # Start countdown timer only for Timed mode
+        if data['mode'] == 'Timed':
+            self.timer_label.config(text=f"⏱ {data['timer_seconds']}")
+            self.update_question_timer()
+        else:
+            self.timer_label.config(text="")
         
         # Content area
         content_frame = tk.Frame(quiz_frame, bg='white')
@@ -264,11 +362,76 @@ class QuizApplication:
                                command=on_option_select, cursor='hand2')
             rb.pack(fill=tk.X, padx=15, pady=12)
         
+        # Hint and Submit buttons container
+        button_container = tk.Frame(content_frame, bg='white')
+        button_container.pack(pady=15)
+        
+        # Hint button (50/50 lifeline)
+        data = self.quiz_data
+        if data['hints_remaining'] > 0:
+            hint_btn = tk.Button(button_container, text=f"💡 Hint ({data['hints_remaining']} left)", 
+                                font=('Segoe UI', 10, 'bold'),
+                                bg='#f59e0b', fg='white', relief=tk.FLAT, cursor='hand2',
+                                activebackground='#d97706', command=self.use_hint)
+            hint_btn.pack(side=tk.LEFT, padx=5, ipady=8, ipadx=15)
+        
         # Submit button with modern styling
-        submit_btn = tk.Button(content_frame, text="Submit Answer →", font=('Segoe UI', 12, 'bold'), 
-                              bg='#667eea', fg='white', width=25, height=2, command=self.submit_answer,
-                              relief=tk.FLAT, cursor='hand2', activebackground='#5568d3')
-        submit_btn.pack(pady=15)
+        submit_btn = tk.Button(button_container, text="Submit Answer →", font=('Segoe UI', 12, 'bold'), 
+                              bg='#667eea', fg='white', relief=tk.FLAT, cursor='hand2',
+                              activebackground='#5568d3', command=self.submit_answer)
+        submit_btn.pack(side=tk.LEFT, padx=5, ipady=8, ipadx=20)
+    
+    def _update_hint_button_recursive(self, widget):
+        """Recursively find and update hint button"""
+        try:
+            if isinstance(widget, tk.Button) and '💡 Hint' in widget['text']:
+                data = self.quiz_data
+                if data['hints_remaining'] > 0:
+                    widget.config(text=f"💡 Hint ({data['hints_remaining']} left)")
+                else:
+                    widget.config(state='disabled', bg='#d1d5db')
+                return
+            for child in widget.winfo_children():
+                self._update_hint_button_recursive(child)
+        except:
+            pass
+    
+    def use_hint(self):
+        """Use 50/50 hint - eliminate 2 wrong answers"""
+        data = self.quiz_data
+        
+        if data['hints_remaining'] <= 0:
+            messagebox.showwarning("No Hints", "You've used all your hints!")
+            return
+        
+        question = data['questions'][data['current_index']]
+        correct_answer = question['correct']
+        
+        # Get wrong answer indices
+        wrong_indices = [i for i in range(4) if i != correct_answer]
+        
+        # Randomly eliminate 2 wrong answers
+        import random
+        to_eliminate = random.sample(wrong_indices, min(2, len(wrong_indices)))
+        
+        # Store eliminated options
+        data['eliminated_options'] = to_eliminate
+        data['hints_remaining'] -= 1
+        
+        # Play sound
+        sound_effects.sound_manager.play_achievement()
+        
+        # Disable eliminated option buttons
+        for idx in to_eliminate:
+            container = self.option_containers[idx]
+            # Grey out the container
+            container.config(bg='#e5e7eb')
+            for child in container.winfo_children():
+                child.config(bg='#e5e7eb', fg='#9ca3af', state='disabled')
+        
+        # Update hint button text instead of refreshing entire question
+        for widget in self.root.winfo_children():
+            self._update_hint_button_recursive(widget)
     
     def update_timer(self):
         """Update timer display for Timed mode"""
@@ -285,6 +448,10 @@ class QuizApplication:
     def update_question_timer(self):
         """Update 15-second countdown timer for each question"""
         if not hasattr(self, 'timer_label') or not self.timer_label.winfo_exists():
+            return
+        
+        # Ensure timer is only active in Timed mode
+        if self.quiz_data.get('mode') != 'Timed':
             return
         
         data = self.quiz_data
@@ -373,13 +540,21 @@ class QuizApplication:
             data['correct'] += 1
             data['consecutive_correct'] += 1
             
+            # Play correct sound
+            sound_effects.sound_manager.play_correct()
+            
             # Calculate time bonus for Timed mode
             if data['mode'] == 'Timed':
                 bonus = score_calculator.calculate_time_bonus(time_taken)
                 data['time_bonuses'].append(bonus)
+                if bonus > 0:
+                    sound_effects.sound_manager.play_streak()  # Bonus sound
         else:
             data['wrong'] += 1
             data['consecutive_correct'] = 0
+            
+            # Play wrong sound
+            sound_effects.sound_manager.play_wrong()
             
             # Check Survival mode game over
             if data['mode'] == 'Survival' and data['wrong'] >= 3:
@@ -408,6 +583,9 @@ class QuizApplication:
         
         main_container = tk.Frame(self.root, bg='#f5f7fa')
         main_container.pack(fill=tk.BOTH, expand=True)
+        
+        # Quick navigation bar
+        self.add_top_nav(main_container)
         
         feedback_card = tk.Frame(main_container, bg='white', relief=tk.FLAT, bd=0,
                                 highlightthickness=1, highlightbackground='#e2e8f0')
@@ -558,12 +736,26 @@ class QuizApplication:
             correct, wrong, score, percentage, time_taken, data['mode']
         )
         
+        # Check for new achievements
+        new_achievements = achievements.check_and_unlock_achievements(self.current_user)
+        
+        # Play sound effects
+        if percentage == 100:
+            sound_effects.sound_manager.play_perfect_score()
+        elif percentage >= 90:
+            sound_effects.sound_manager.play_level_up()
+        
         main_container = tk.Frame(self.root, bg='#f5f7fa')
         main_container.pack(fill=tk.BOTH, expand=True)
         
+        # Show confetti for perfect score
+        if percentage == 100:
+            confetti.show_confetti(main_container, duration=3000)
+        
+        # Results card - directly in main container, centered
         results_card = tk.Frame(main_container, bg='white', relief=tk.FLAT, bd=0,
                                highlightthickness=1, highlightbackground='#e2e8f0')
-        results_card.place(relx=0.5, rely=0.5, anchor='center', width=700, height=700)
+        results_card.place(relx=0.5, rely=0.5, anchor='center')
         
         # Title with icon
         title = tk.Label(results_card, text="🏆 Quiz Complete!", font=('Segoe UI', 28, 'bold'),
@@ -623,24 +815,40 @@ class QuizApplication:
                                   font=('Segoe UI', 10, 'bold'), bg='white', fg='#f59e0b')
             bonus_label.pack(pady=8)
         
-        # Buttons - all three options
+        # Show achievement notifications
+        if new_achievements:
+            achievement_frame = tk.Frame(results_card, bg='#fef3c7', relief=tk.FLAT, bd=0,
+                                        highlightthickness=1, highlightbackground='#f59e0b')
+            achievement_frame.pack(fill=tk.X, padx=50, pady=10)
+            
+            tk.Label(achievement_frame, text="🏆 New Achievements Unlocked!", 
+                    font=('Segoe UI', 11, 'bold'), bg='#fef3c7', fg='#92400e').pack(pady=(10, 5))
+            
+            for achievement in new_achievements[:3]:  # Show up to 3
+                achievement_text = f"{achievement['icon']} {achievement['name']}"
+                tk.Label(achievement_frame, text=achievement_text, font=('Segoe UI', 9),
+                        bg='#fef3c7', fg='#78350f').pack(pady=2)
+            
+            tk.Label(achievement_frame, text="" if len(new_achievements) <= 3 else f"+{len(new_achievements)-3} more",
+                    font=('Segoe UI', 8), bg='#fef3c7', fg='#78350f').pack(pady=(0, 10))
+        
+        # Buttons - quick redirection row
         btn_container = tk.Frame(results_card, bg='white')
         btn_container.pack(fill=tk.X, padx=50, pady=(15, 25))
         
-        dashboard_btn = tk.Button(btn_container, text="🏠 Back to Dashboard", font=('Segoe UI', 12, 'bold'),
-                                 bg='#667eea', fg='white', relief=tk.FLAT, bd=0, cursor='hand2',
-                                 activebackground='#5568d3', command=self.show_dashboard)
-        dashboard_btn.pack(fill=tk.X, pady=(0, 8), ipady=12)
+        def cta(text, color_bg, color_fg, cmd):
+            return tk.Button(btn_container, text=text, font=('Segoe UI', 11, 'bold'),
+                             bg=color_bg, fg=color_fg, relief=tk.FLAT, bd=0, cursor='hand2',
+                             activebackground=color_bg, command=cmd)
         
-        analytics_btn = tk.Button(btn_container, text="📊 View Analytics", font=('Segoe UI', 11),
-                                 bg='#f7fafc', fg='#667eea', relief=tk.FLAT, bd=0, cursor='hand2',
-                                 activebackground='#edf2f7', command=self.show_analytics)
-        analytics_btn.pack(fill=tk.X, pady=(0, 8), ipady=12)
+        # Arrange in a single row
+        dashboard_btn = cta('🏠 Dashboard', '#667eea', 'white', self.show_dashboard)
+        analytics_btn = cta('📊 Analytics', '#f7fafc', '#667eea', self.show_analytics)
+        leaderboard_btn = cta('🏆 Leaderboard', '#f7fafc', '#667eea', self.show_leaderboard)
         
-        leaderboard_btn = tk.Button(btn_container, text="🏆 View Leaderboard", font=('Segoe UI', 11),
-                                    bg='#f7fafc', fg='#667eea', relief=tk.FLAT, bd=0, cursor='hand2',
-                                    activebackground='#edf2f7', command=self.show_leaderboard)
-        leaderboard_btn.pack(fill=tk.X, ipady=12)
+        dashboard_btn.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=5, ipady=10)
+        analytics_btn.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=5, ipady=10)
+        leaderboard_btn.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=5, ipady=10)
     
     def show_analytics(self):
         """Show analytics with matplotlib graphs"""
@@ -669,6 +877,9 @@ class QuizApplication:
         
         main_container = tk.Frame(self.root, bg='#f5f7fa')
         main_container.pack(fill=tk.BOTH, expand=True)
+        
+        # Quick navigation bar
+        self.add_top_nav(main_container)
         
         # Header
         header = tk.Frame(main_container, bg='#667eea', height=100)
@@ -776,6 +987,9 @@ class QuizApplication:
         main_container = tk.Frame(self.root, bg='#f5f7fa')
         main_container.pack(fill=tk.BOTH, expand=True)
         
+        # Quick navigation bar
+        self.add_top_nav(main_container)
+        
         # Header
         header = tk.Frame(main_container, bg='#667eea', height=120)
         header.pack(fill=tk.X)
@@ -789,16 +1003,34 @@ class QuizApplication:
                            bg='#667eea', fg='#e0e7ff')
         subtitle.pack()
         
-        # Content
-        content = tk.Frame(main_container, bg='#f5f7fa')
-        content.pack(fill=tk.BOTH, expand=True, padx=40, pady=30)
+        # Create scrollable canvas for content
+        canvas = tk.Canvas(main_container, bg='#f5f7fa', highlightthickness=0)
+        scrollbar = tk.Scrollbar(main_container, orient='vertical', command=canvas.yview)
+        content = tk.Frame(canvas, bg='#f5f7fa')
+        
+        canvas.configure(yscrollcommand=scrollbar.set)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y, padx=(0, 10))
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        
+        canvas_window = canvas.create_window((0, 0), window=content, anchor='nw')
+        
+        def on_frame_configure(event=None):
+            canvas.configure(scrollregion=canvas.bbox('all'))
+            canvas.itemconfig(canvas_window, width=canvas.winfo_width())
+        
+        content.bind('<Configure>', on_frame_configure)
+        canvas.bind('<Configure>', on_frame_configure)
+        
+        # Add padding
+        content_inner = tk.Frame(content, bg='#f5f7fa')
+        content_inner.pack(fill=tk.BOTH, expand=True, padx=40, pady=30)
         
         # Get stats
         stats = data_manager.get_user_stats_summary(self.current_user)
         
         # Stats grid
-        stats_container = tk.Frame(content, bg='#f5f7fa')
-        stats_container.pack(fill=tk.BOTH, expand=True)
+        stats_container = tk.Frame(content_inner, bg='#f5f7fa')
+        stats_container.pack(fill=tk.X, pady=(0, 20))
         
         stat_items = [
             ("🏆", "Total Quizzes", stats['total_quizzes']),
@@ -838,8 +1070,61 @@ class QuizApplication:
         for i in range(4):
             stats_container.grid_columnconfigure(i, weight=1)
         
+        # Achievements Section
+        achievement_header = tk.Label(content_inner, text="🏆 Achievements", font=('Segoe UI', 18, 'bold'),
+                                     bg='#f5f7fa', fg='#2d3748')
+        achievement_header.pack(pady=(20, 10))
+        
+        achievement_data = achievements.get_user_achievements_display(self.current_user)
+        
+        achievement_info = tk.Label(content_inner, 
+                                   text=f"Unlocked {achievement_data['unlocked_count']} of {achievement_data['total']}",
+                                   font=('Segoe UI', 11), bg='#f5f7fa', fg='#718096')
+        achievement_info.pack()
+        
+        # Achievement display grid
+        ach_container = tk.Frame(content_inner, bg='#f5f7fa')
+        ach_container.pack(fill=tk.X, pady=10)
+        
+        # Show unlocked achievements
+        row, col = 0, 0
+        for ach in achievement_data['unlocked'][:8]:  # Show first 8 unlocked
+            ach_card = tk.Frame(ach_container, bg='#10b981', relief=tk.FLAT, bd=0,
+                               highlightthickness=1, highlightbackground='#059669')
+            ach_card.grid(row=row, column=col, padx=5, pady=5, sticky='nsew')
+            
+            tk.Label(ach_card, text=ach['icon'], font=('Segoe UI', 20),
+                    bg='#10b981').pack(pady=(8, 2))
+            tk.Label(ach_card, text=ach['name'], font=('Segoe UI', 9, 'bold'),
+                    bg='#10b981', fg='white', wraplength=100).pack(pady=(0, 8))
+            
+            col += 1
+            if col > 3:
+                col = 0
+                row += 1
+        
+        # Show some locked achievements
+        for ach in achievement_data['locked'][:4]:  # Show first 4 locked
+            ach_card = tk.Frame(ach_container, bg='#9ca3af', relief=tk.FLAT, bd=0,
+                               highlightthickness=1, highlightbackground='#6b7280')
+            ach_card.grid(row=row, column=col, padx=5, pady=5, sticky='nsew')
+            
+            tk.Label(ach_card, text="🔒", font=('Segoe UI', 20),
+                    bg='#9ca3af').pack(pady=(8, 2))
+            tk.Label(ach_card, text=ach['name'], font=('Segoe UI', 9),
+                    bg='#9ca3af', fg='white', wraplength=100).pack(pady=(0, 8))
+            
+            col += 1
+            if col > 3:
+                col = 0
+                row += 1
+        
+        # Configure achievement grid
+        for i in range(4):
+            ach_container.grid_columnconfigure(i, weight=1, minsize=150)
+        
         # Back button
-        back_btn = tk.Button(content, text="← Back to Dashboard", font=('Segoe UI', 12, 'bold'),
+        back_btn = tk.Button(content_inner, text="← Back to Dashboard", font=('Segoe UI', 12, 'bold'),
                             bg='#667eea', fg='white', relief=tk.FLAT, bd=0, cursor='hand2',
                             activebackground='#5568d3', command=self.show_dashboard)
         back_btn.pack(fill=tk.X, pady=(20, 0), ipady=12)
