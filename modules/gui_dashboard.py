@@ -61,12 +61,18 @@ class DashboardScreen:
         # Quick stats cards
         stats = data_manager.get_user_stats_summary(self.username)
         
+        # Get streak from achievements module
+        from utils import achievements as ach
+        user_settings = ach.get_user_settings(self.username)
+        streak_count = user_settings.get('streak_count', 0)
+        
         stats_container = tk.Frame(content_frame, bg='#f5f7fa')
         stats_container.pack(fill=tk.X, pady=(0, 30))
         
         stat_items = [
             ("🏆", "Total Quizzes", stats['total_quizzes'], '#667eea'),
             ("⭐", "Best Score", stats['best_score'], '#f59e0b'),
+            ("🔥", "Day Streak", streak_count, '#ef4444'),
             ("📈", "Average", f"{stats['average_percentage']:.1f}%", '#10b981')
         ]
         

@@ -28,6 +28,18 @@ class AnalyticsScreen:
         main_frame = tk.Frame(self.root, bg='#f5f7fa')
         main_frame.pack(fill=tk.BOTH, expand=True)
         
+        # Quick nav bar
+        try:
+            from main import QuizApplication  # for type reference only
+        except Exception:
+            pass
+        nav = tk.Frame(main_frame, bg='#eef2ff', highlightthickness=1, highlightbackground='#e2e8f0')
+        nav.pack(fill=tk.X)
+        def nav_btn(text, cmd):
+            return tk.Button(nav, text=text, font=('Segoe UI',10,'bold'), bg='#eef2ff', fg='#374151',
+                             relief=tk.FLAT, bd=0, cursor='hand2', activebackground='#e0e7ff', command=cmd)
+        nav_btn('← Dashboard', self.back_callback).pack(side=tk.LEFT, padx=8, pady=6)
+        
         # Modern header
         header_frame = tk.Frame(main_frame, bg='#667eea', height=100)
         header_frame.pack(fill=tk.X)
@@ -129,7 +141,7 @@ class AnalyticsScreen:
         
         title = tk.Label(
             stats_frame,
-            text="Summary Statistics (NumPy Calculations)",
+            text="Summary Statistics",
             font=('Arial', 16, 'bold'),
             bg='white'
         )

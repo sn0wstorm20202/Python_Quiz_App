@@ -146,16 +146,6 @@ class LoginScreen:
             command=self.register
         )
         register_button.pack(fill=tk.X, ipady=12)
-        
-        # Footer
-        footer_label = tk.Label(
-            content,
-            text="BTech 2nd Year Project",
-            font=('Segoe UI', 9),
-            bg='white',
-            fg='#a0aec0'
-        )
-        footer_label.pack(side=tk.BOTTOM, pady=(30, 0))
     
     def login(self):
         username = self.username_entry.get().strip()
