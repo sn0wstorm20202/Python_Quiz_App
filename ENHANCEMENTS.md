@@ -1,4 +1,4 @@
-# Quiz Application - New Features & Enhancements
+**# Quiz Application - New Features & Enhancements
 
 ## 🎉 What's New
 
@@ -432,3 +432,4 @@ This enhanced version maintains the original educational project license.
 ---
 
 **Enjoy the enhanced quiz experience! 🎉**
+**
