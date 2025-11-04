@@ -249,14 +249,6 @@
     },
     {
         "category": "DSA",
-        "difficulty": "Easy",
-        "question": "Which data structure uses LIFO (Last In First Out) principle?",
-        "options": ["Queue", "Stack", "Array", "Linked List"],
-        "correct": 1,
-        "explanation": "A stack follows the Last In First Out principle, where the last inserted element is removed first."
-    },
-    {
-        "category": "DSA",
         "difficulty": "Medium",
         "question": "What is the time complexity of searching an element in a balanced binary search tree (BST)?",
         "options": ["O(n)", "O(log n)", "O(1)", "O(n log n)"],
