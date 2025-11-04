@@ -65,6 +65,30 @@
     },
     {
         "category": "Python",
+        "difficulty": "Easy",
+        "question": "What is the output of: print(bool('False'))?",
+        "options": ["False", "True", "None", "Error"],
+        "correct": 1,
+        "explanation": "Non-empty strings in Python are truthy, so bool('False') returns True."
+    },
+    {
+        "category": "Python",
+        "difficulty": "Easy",
+        "question": "Which of the following is used to define a block of code in Python?",
+        "options": ["Braces {}", "Parentheses ()", "Indentation", "Quotation Marks"],
+        "correct": 2,
+        "explanation": "Python uses indentation to define blocks instead of braces."
+    },
+    {
+        "category": "Python",
+        "difficulty": "Medium",
+        "question": "What is the difference between 'is' and '==' in Python?",
+        "options": ["They are identical operators", "'is' checks identity, '==' checks equality", "'==' checks identity, 'is' checks equality", "Both check equality"],
+        "correct": 1,
+        "explanation": "'is' checks whether two variables point to the same object, while '==' compares their values."
+    },
+    {
+        "category": "Python",
         "difficulty": "Medium",
         "question": "What is the output of: print([1, 2, 3] * 2)?",
         "options": ["[2, 4, 6]", "[1, 2, 3, 1, 2, 3]", "[1, 2, 3, 2]", "Error"],
@@ -225,6 +249,30 @@
     },
     {
         "category": "DSA",
+        "difficulty": "Easy",
+        "question": "Which data structure uses LIFO (Last In First Out) principle?",
+        "options": ["Queue", "Stack", "Array", "Linked List"],
+        "correct": 1,
+        "explanation": "A stack follows the Last In First Out principle, where the last inserted element is removed first."
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Medium",
+        "question": "What is the time complexity of searching an element in a balanced binary search tree (BST)?",
+        "options": ["O(n)", "O(log n)", "O(1)", "O(n log n)"],
+        "correct": 1,
+        "explanation": "In a balanced BST, each comparison halves the search space, leading to O(log n) time complexity."
+    },
+    {
+        "category": "DSA",
+        "difficulty": "Medium",
+        "question": "Which of the following sorting algorithms is not based on comparisons?",
+        "options": ["Merge Sort", "Heap Sort", "Quick Sort", "Counting Sort"],
+        "correct": 3,
+        "explanation": "Counting Sort uses counting rather than comparisons, making it a non-comparison-based algorithm."
+    },
+    {
+        "category": "DSA",
         "difficulty": "Medium",
         "question": "What is the worst case time complexity of binary search?",
         "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
@@ -382,6 +430,30 @@
         "options": ["0-1023", "1024-49151", "49152-65535", "0-65535"],
         "correct": 0,
         "explanation": "Well-known ports range from 0-1023, reserved for standard services"
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Easy",
+        "question": "Which layer of the OSI model is responsible for logical addressing?",
+        "options": ["Data Link Layer", "Network Layer", "Transport Layer", "Session Layer"],
+        "correct": 1,
+        "explanation": "The Network Layer handles logical addressing using IP addresses."
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Medium",
+        "question": "What is the purpose of the ARP protocol?",
+        "options": ["To map MAC address to IP address", "To map IP address to MAC address", "To resolve domain names", "To transfer files"],
+        "correct": 1,
+        "explanation": "ARP (Address Resolution Protocol) is used to find the MAC address corresponding to a given IP address."
+    },
+    {
+        "category": "Computer Networks",
+        "difficulty": "Medium",
+        "question": "Which of the following is a connection-oriented protocol?",
+        "options": ["UDP", "TCP", "IP", "ICMP"],
+        "correct": 1,
+        "explanation": "TCP (Transmission Control Protocol) establishes a connection before data transfer, ensuring reliability."
     },
     {
         "category": "Computer Networks",
