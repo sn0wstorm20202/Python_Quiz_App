@@ -21,3 +21,9 @@ user_id,username,date,time,category,difficulty,total_questions,correct,wrong,sco
 20,Somsubhra,2025-10-27,14:34:03,Computer Networks,Easy,5,4,1,40,80.0,20,Survival
 21,Somsubhra,2025-10-27,14:36:44,Computer Networks,Easy,5,5,0,73,100.0,26,Timed
 22,Somsubhra,2025-10-27,15:03:13,Computer Networks,Easy,5,5,0,75,100.0,14,Timed
+23,Prakhar,2025-11-04,18:39:40,Python,Easy,5,5,0,50,100.0,44,Practice
+24,Prakhar,2025-11-04,18:42:53,DSA,Easy,8,7,1,70,87.5,130,Practice
+25,Prakhar,2025-11-04,18:43:58,Python,Easy,5,5,0,50,100.0,39,Practice
+26,Prakhar,2025-11-04,18:45:02,Python,Easy,8,8,0,80,100.0,42,Practice
+27,Prakhar,2025-11-04,18:46:02,Python,Easy,8,8,0,80,100.0,26,Practice
+28,Somsubhra,2025-11-05,10:23:22,Python,Easy,10,9,1,90,90.0,73,Practice
