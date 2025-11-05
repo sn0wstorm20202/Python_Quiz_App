@@ -5,9 +5,12 @@ C:\Users\Somsubhra Dalui\quiz_app
 
 🚀 Quick Start
 cd C:\Users\Somsubhra Dalui\quiz_app
+```bash
 pip install -r requirements.txt
+```
+```bash
 python main.py
-
+```
 ✅ Project Completion Overview
 💻 Core Technology Stack
 
