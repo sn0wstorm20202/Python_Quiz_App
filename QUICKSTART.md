@@ -24,7 +24,8 @@ python main.py
 1. The application will automatically create necessary data files
 2. Click **Register** to create a new account
 3. Enter a username (minimum 3 characters) and password (minimum 4 characters)
-4. After registration, you'll be logged in automatically
+4. After registration, you'll be logged in automatically and your credentials will be saved
+
 
 ## Taking Your First Quiz
 
