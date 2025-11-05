@@ -1,240 +1,251 @@
-WARP.md
+# 🧭 WARP.md  
+### _Developer & Repository Guidance for WARP (warp.dev)_
 
-This document provides guidance to WARP (warp.dev) and developers when working with this repository.
+---
 
-⚙️ Commands
-▶️ Running the Application
+## ⚙️ Commands
+
+### ▶️ Running the Application
+```bash
 python main.py
+```
 
-📦 Installing Dependencies
+### 📦 Installing Dependencies
+```bash
 pip install -r requirements.txt
+```
 
-🔍 Checking Installed Dependencies
+### 🔍 Checking Installed Dependencies
+```bash
 pip list | Select-String -Pattern "numpy|pandas|matplotlib"
+```
 
-🧱 High-Level Architecture
-🔄 Application Flow
+---
 
-This is a stateful, multi-screen Tkinter GUI application orchestrated by a centralized controller:
+## 🧱 High-Level Architecture
 
-main.py defines the QuizApplication class, which manages all screen transitions, user state, and quiz data.
+### 🔄 Application Flow
+This is a **stateful, multi-screen Tkinter GUI application** orchestrated by a centralized controller:
 
-All navigation routes through controller methods (show_dashboard(), show_quiz_setup(), etc.).
+- **`main.py`** defines the `QuizApplication` class, managing all screen transitions, user state, and quiz data.  
+- All navigation routes through controller methods like `show_dashboard()` or `show_quiz_setup()`.  
+- **`clear_screen()`** ensures a clean transition by destroying existing widgets before new ones are rendered.  
+- User session data is stored in **`QuizApplication.current_user`**.
 
-clear_screen() ensures a clean transition by destroying existing widgets before new screens are rendered.
+---
 
-User session information is stored in QuizApplication.current_user.
+## 🗂️ Module Organization
 
-🗂️ Module Organization
-modules/ — GUI Screens
+### 🖥️ `modules/` — GUI Screens
+Each GUI module creates interface components but doesn’t control navigation logic.  
+Navigation happens via **callback functions** provided by the controller.
 
-Each GUI module creates interface components but does not control navigation logic.
-Navigation is handled via callback functions received from the controller.
+| Module | Description |
+|---------|--------------|
+| `gui_login.py` | Handles login; uses `on_login_success` callback. |
+| `gui_dashboard.py` | Main hub; receives a callbacks dictionary for navigation. |
+| `gui_analytics.py`, `gui_history.py` | Use `back_callback` to return to the dashboard. |
 
-gui_login.py — Uses on_login_success callback.
+### ⚙️ `utils/` — Backend Logic
+Handles non-GUI functionality like data, scoring, and file operations.
 
-gui_dashboard.py — Accepts a callbacks dictionary for navigation functions.
+| Module | Function |
+|---------|-----------|
+| `file_handler.py` | Raw file I/O (CSV/JSON read/write). |
+| `data_manager.py` | High-level data ops using pandas. |
+| `score_calculator.py` | Scoring and statistics using NumPy. |
+| `question_manager.py` | Loads, filters, and randomizes questions. |
 
-gui_analytics.py and gui_history.py — Receive back_callback to return to the dashboard.
+---
 
-utils/ — Backend Logic
+## 📊 Data Flow Architecture
 
-Contains non-GUI modules that handle data, scoring, and file operations.
+### 🗃️ Storage Layer (`data/`)
+| File | Purpose |
+|------|----------|
+| `users.csv` | User credentials |
+| `quiz_history.csv` | Quiz attempt history |
+| `questions.json` | Question bank |
 
-file_handler.py — Handles raw file I/O (CSV/JSON read/write).
+### 🔁 Data Access Flow
+```
+file_handler.py → data_manager.py → score_calculator.py → GUI
+```
 
-data_manager.py — Manages high-level data operations using pandas.
+- `file_handler.py`: Handles raw file operations.  
+- `data_manager.py`: Loads DataFrames, filters, and aggregates data.  
+- `score_calculator.py`: Performs numerical computations via NumPy.  
+- `GUI`: Displays processed results.
 
-score_calculator.py — Performs all score and statistics computations using NumPy.
+---
 
-question_manager.py — Loads, filters, and randomizes questions.
+## 🧮 Integration Philosophy
 
-📊 Data Flow Architecture
-Storage Layer (data/)
+### 🔢 NumPy Usage
+All numerical operations go through `score_calculator.py`:
+- Use **NumPy arrays** for arithmetic and statistics.
+- Perform trend analysis via `np.polyfit()`.
+- Avoid manual arithmetic on Python lists.
 
-users.csv — Stores user credentials.
+### 🧬 pandas Usage
+All persistence and querying go through `data_manager.py`:
+- Load quiz data as **DataFrames**.
+- Use **boolean indexing**, **groupby()**, and **aggregation** for analytics.
+- Append new results via:
+  ```python
+  pd.concat([...], ignore_index=True)
+  ```
 
-quiz_history.csv — Tracks all quiz attempts.
+---
 
-questions.json — Stores the question bank.
+## 🧠 Key Design Patterns
 
-Data Access Flow
-
-file_handler.py → Raw file operations
-
-data_manager.py → DataFrame loading, aggregation, and manipulation
-
-score_calculator.py → Numerical processing with NumPy
-
-GUI → Displays processed results
-
-🧮 Integration Philosophy
-NumPy Usage
-
-All numeric operations go through score_calculator.py:
-
-Use NumPy arrays for arithmetic and statistics.
-
-Linear regression via np.polyfit() for trend analysis.
-
-Avoid manual arithmetic on raw Python lists.
-
-pandas Usage
-
-All persistence and querying are handled in data_manager.py:
-
-Load all quiz data as pandas DataFrames.
-
-Use boolean indexing, groupby(), and aggregation for filtering and analytics.
-
-Append new quiz results via pd.concat([...], ignore_index=True).
-
-🧠 Key Design Patterns
-Screen Lifecycle
-
+### 🖼️ Screen Lifecycle
+```text
 clear_screen() → destroys widgets
+→ creates new frame hierarchy
+→ packs frames into self.root
+→ stores current screen reference
+```
 
-Creates new frame hierarchy
-
-Packs frames into self.root
-
-Stores reference (optional) in self.current_screen
-
-Quiz State Dictionary
+### 🧾 Quiz State Dictionary
+```python
 {
-    'questions': [...],
-    'current_index': 0,
-    'correct': 0,
-    'wrong': 0,
-    'answers': [],
-    'category': str,
-    'difficulty': str,
-    'mode': str
+  'questions': [...],
+  'current_index': 0,
+  'correct': 0,
+  'wrong': 0,
+  'answers': [],
+  'category': str,
+  'difficulty': str,
+  'mode': str
 }
+```
 
-Error Handling
+### ⚠️ Error Handling
+- File errors handled via `try/except` with safe defaults.  
+- Missing files auto-created via `initialize_data_files()`.  
+- GUI errors displayed via `messagebox.showerror()`.
 
-File errors handled with try/except and safe defaults.
+---
 
-Missing files are auto-created via initialize_data_files().
+## 🏆 Scoring System
 
-GUI errors surfaced via messagebox.showerror().
+| Difficulty | Points |
+|-------------|---------|
+| Easy | 10 |
+| Medium | 15 |
+| Hard | 25 |
 
-🏆 Scoring System
-Difficulty-Based Points
-Difficulty	Points
-Easy	10
-Medium	15
-Hard	25
-Quiz Modes
+### 🎮 Quiz Modes
+- **Practice Mode:** Base scoring, untimed, with explanations.  
+- **Timed Mode:** Base + time bonus (+5 for <10s, +3 for <20s).  
+- **Survival Mode:** Base + 1.5× multiplier after 5 consecutive correct answers.
 
-Practice Mode: Base scoring, untimed, with explanations.
+---
 
-Timed Mode: Base + time bonus (+5 for <10s, +3 for <20s).
-
-Survival Mode: Base + 1.5× multiplier after 5 consecutive correct answers.
-
-📝 Question Structure (data/questions.json)
+## 📝 Question Structure (`data/questions.json`)
+```json
 {
-    "category": "Python|DSA|Computer Networks",
-    "difficulty": "Easy|Medium|Hard",
-    "question": "Question text",
-    "options": ["A", "B", "C", "D"],
-    "correct": 0-3,
-    "explanation": "Explanation text"
+  "category": "Python|DSA|Computer Networks",
+  "difficulty": "Easy|Medium|Hard",
+  "question": "Question text",
+  "options": ["A", "B", "C", "D"],
+  "correct": 0,
+  "explanation": "Explanation text"
 }
+```
+✅ Categories are dynamically loaded using `question_manager.get_categories()`.  
+New categories can be added **without modifying code**.
 
+---
 
-Categories are dynamically loaded using question_manager.get_categories().
-New categories can be added without modifying any code.
+## 📈 Matplotlib Integration
+Analytics graphs are embedded using `FigureCanvasTkAgg`:
 
-📈 Matplotlib Integration
+```python
+fig = Figure()
+ax = fig.add_subplot(111)
+ax.plot(x, y)
 
-Analytics graphs are embedded via FigureCanvasTkAgg:
+canvas = FigureCanvasTkAgg(fig, master=parent_frame)
+canvas.draw()
+canvas.get_tk_widget().pack()
+```
+Trend lines use NumPy’s linear regression via `np.polyfit()`.
 
-Create a Figure object
+---
 
-Add subplots and plot the data
+## 🧩 Conventions & Coding Standards
 
-Embed via FigureCanvasTkAgg(fig, master=parent_frame)
+### 📁 File Paths
+Always construct paths using helpers like:
+```python
+get_data_path(), get_user_data_path()
+```
 
-Call canvas.draw() and pack the widget
+### 🧾 Quiz History CSV Columns
+`user_id, username, date, time, category, difficulty, total_questions, correct, wrong, score, percentage, time_taken, mode`
 
-Trend lines are computed using NumPy’s linear regression (np.polyfit()).
+### 🔗 Callback Pattern
+GUI screens **never control navigation directly** — they use callbacks from `QuizApplication`.
 
-🧩 Conventions & Coding Standards
-File Paths
-
-Always construct paths using helper functions like get_data_path() or get_user_data_path().
-
-Quiz History CSV Columns
-
-user_id, username, date, time, category, difficulty, total_questions, correct, wrong, score, percentage, time_taken, mode
-
-Callback Pattern
-
-GUI screens never control navigation directly — they call callbacks passed from QuizApplication.
-
-Window Geometry
-
-Screens are centered automatically using:
-
+### 🪟 Window Geometry
+```python
 x = (screen_width - window_width) // 2
 y = (screen_height - window_height) // 2
 self.root.geometry(f"{window_width}x{window_height}+{x}+{y}")
+```
 
-🧪 Testing Checklist
+---
 
-Before committing changes:
+## 🧪 Testing Checklist
+Before committing, verify:
 
-✅ Verify login & registration flow
+✅ Login & registration flow  
+✅ All quiz modes (Practice, Timed, Survival)  
+✅ Analytics graphs render correctly  
+✅ History & leaderboard screens function properly  
+✅ Data correctly recorded in CSVs  
 
-✅ Test quizzes in all modes
+---
 
-✅ Confirm analytics graphs display correctly
+## 🧑‍💻 Developer Guidelines (✨ New Section)
+- Use meaningful, self-explanatory names.  
+- Keep GUI and logic separate — follow **MVC principles**.  
+- Commit frequently with clear messages.  
+- Test after every major change.  
+- Write docstrings following **PEP 257**.
 
-✅ Ensure history and leaderboard screens work
+---
 
-✅ Check proper data recording in CSV files
+## 🚀 Performance Optimization Tips (✨ New Section)
+- Prefer **vectorized NumPy/pandas** ops over loops.  
+- Use **lazy loading** for question banks.  
+- Cache frequently used user data.  
+- Avoid redundant `plt.show()` calls in embedded graphs.
 
-🧑‍💻 Developer Guidelines (✨ New Section)
+---
 
-Use meaningful variable and function names that clearly describe their purpose.
+## 🤝 Contribution Best Practices (✨ New Section)
+- Create a **new branch** per feature or fix.  
+- Run `flake8` or a linter before committing.  
+- Maintain consistent **4-space indentation**.  
+- Update docs if architecture changes.  
+- Follow commit message conventions:  
+  ```
+  feat:, fix:, refactor:
+  ```
 
-Keep GUI code and business logic separate — follow the MVC pattern principle.
+---
 
-Commit frequently with clear, descriptive messages.
+## 🐍 Python Environment Requirements
+| Package | Minimum Version |
+|----------|-----------------|
+| Python | 3.8+ |
+| numpy | 1.24.0 |
+| pandas | 2.0.0 |
+| matplotlib | 3.7.0 |
+| tkinter | Included (Windows/macOS) |
 
-Test after every significant change to ensure backward compatibility.
-
-Document new functions with concise docstrings following the PEP 257 style.
-
-🚀 Performance Optimization Tips (✨ New Section)
-
-Prefer vectorized pandas and NumPy operations over Python loops.
-
-Use lazy loading for question banks to improve startup time.
-
-Cache frequently used user data in memory for faster navigation.
-
-Avoid unnecessary plt.show() calls when embedding figures in Tkinter.
-
-🤝 Contribution Best Practices (✨ New Section)
-
-Create a new branch for every new feature or bug fix.
-
-Run flake8 or any linter before committing.
-
-Ensure consistent indentation (4 spaces).
-
-Add meaningful comments and update this documentation if architecture changes.
-
-Use descriptive commit messages like “fix:”, “feat:”, or “refactor:”.
-
-🐍 Python Environment Requirements
-Package	Minimum Version
-Python	3.8+
-numpy	1.24.0
-pandas	2.0.0
-matplotlib	3.7.0
-tkinter	Included in Python (Windows/macOS)
+---
